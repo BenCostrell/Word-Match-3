@@ -8,32 +8,49 @@ public class WordGenerator : MonoBehaviour {
 	public List<string> adjectives;
 	public List<string> nouns;
 
+	public Dictionary<string, List<string>> posArrayDict;
+
 	public GameObject wordPrefab;
 	public float minAcceptableDistance;
 	public int numEachPos;
 
 	private List<GameObject> wordList;
+	public GameObject player1;
+	public GameObject player2;
 
 	// Use this for initialization
 	void Start () {
+		InitializeDict ();
 		GenerateWords ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
+	}
+
+	void InitializeDict(){
+		posArrayDict = new Dictionary<string, List<string>> ();
+		posArrayDict.Add ("verb", verbs);
+		posArrayDict.Add ("adjective", adjectives);
+		posArrayDict.Add ("noun", nouns);
 	}
 
 	void GenerateWords(){
 		wordList = new List<GameObject> ();
+		wordList.Add (player1);
+		wordList.Add (player2);
 		for (int i = 0; i < numEachPos; i++) {
-			GenerateWord (verbs);
-			GenerateWord (adjectives);
-			GenerateWord (nouns);
+			GenerateWord ("verb");
+			GenerateWord ("adjective");
+			GenerateWord ("noun");
 		}
 	}
 
-	public void GenerateWord(List<string> poSpeechArray){
+	public void GenerateWord(string pos){
+		List<string> poSpeechArray;
+		posArrayDict.TryGetValue (pos, out poSpeechArray);
+
 		int wordIndex = Random.Range (1, poSpeechArray.Count);
 		string wordText = poSpeechArray [wordIndex];
 		Vector3 location = GenerateRandomLocation ();
@@ -63,6 +80,13 @@ public class WordGenerator : MonoBehaviour {
 			}
 		}
 		return accept;
+	}
+
+	public void ReplaceWord(GameObject word){
+		string pos = word.GetComponent<WordController> ().partOfSpeech;
+		GenerateWord (pos);
+		wordList.Remove (word);
+		Destroy (word);
 	}
 
 }

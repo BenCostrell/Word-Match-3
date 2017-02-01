@@ -338,6 +338,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53422fbe94e874d49a1042030b8cbf8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wordGenerator: {fileID: 1140203992}
+  playerPrefab: {fileID: 1000013470285296, guid: ddd93e62216b2f04bb05d24f4700b516,
+    type: 2}
+  player1: {fileID: 0}
+  player2: {fileID: 0}
 --- !u!1 &1140203992
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +354,7 @@ GameObject:
   - 114: {fileID: 1140203993}
   m_Layer: 0
   m_Name: WordGenerator
-  m_TagString: Untagged
+  m_TagString: WordGenerator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -382,6 +387,8 @@ MonoBehaviour:
   wordPrefab: {fileID: 1000011112616772, guid: a238119c761015642b6e8a2796a53ed5, type: 2}
   minAcceptableDistance: 2
   numEachPos: 3
+  player1: {fileID: 0}
+  player2: {fileID: 0}
 --- !u!4 &1140203994
 Transform:
   m_ObjectHideFlags: 0
