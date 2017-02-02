@@ -15,6 +15,7 @@ public class ShapeManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		InitializeShapeGrid ();
 	}
 	
 	// Update is called once per frame
@@ -24,14 +25,15 @@ public class ShapeManager : MonoBehaviour {
 
 	void InitializeShapeGrid(){
 		shapeGrid = new GameObject[5, 5];
+		nextSpawnLocation = new Vector3 (7, 4);
 	}
 
 	public Sprite GetSpriteByName(string spriteName){
 		Sprite spriteToReturn;
-		if (spriteName == "circle") {
+		if (spriteName == "CIRCLE") {
 			spriteToReturn = circleSprite;
 		}
-		else if (spriteName == "square") {
+		else if (spriteName == "SQUARE") {
 			spriteToReturn = squareSprite;
 		}
 		else {
@@ -42,9 +44,9 @@ public class ShapeManager : MonoBehaviour {
 
 	public Color GetColorByName(string colorString){
 		Color colorToReturn;
-		if (colorString == "red") {
+		if (colorString == "RED") {
 			colorToReturn = Color.red;
-		} else if (colorString == "green") {
+		} else if (colorString == "GREEN") {
 			colorToReturn = Color.green;
 		} else {
 			colorToReturn = Color.blue;
@@ -52,8 +54,13 @@ public class ShapeManager : MonoBehaviour {
 		return colorToReturn;
 	}
 
-	public void CreateShape(string newShape, Color newColor){
+	public void CreateShape(string newShape, string newColor){
 		GameObject newShapeObject = Instantiate (shapePrefab, nextSpawnLocation, Quaternion.identity) as GameObject;
 		newShapeObject.GetComponent<ShapeController> ().InitializeProperties (newShape, newColor);
+
+		nextSpawnLocation += new Vector3 (1.6f, 0);
+		if (nextSpawnLocation.x > 13.5f) {
+			nextSpawnLocation = new Vector3 (7, 4);
+		}
 	}
 }

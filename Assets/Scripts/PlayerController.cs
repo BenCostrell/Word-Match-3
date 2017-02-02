@@ -6,7 +6,8 @@ public class PlayerController : MonoBehaviour {
 	public int playerNum;
 	private Rigidbody2D rb;
 	public float speed;
-	public GameObject wordGenerator;
+	public WordGenerator wordGenerator;
+	public ShapeManager shapeManager;
 
 	public string verb;
 	public string adjective;
@@ -17,7 +18,8 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D> ();
-		wordGenerator = GameObject.FindGameObjectWithTag ("WordGenerator");
+		wordGenerator = GameObject.FindGameObjectWithTag ("WordGenerator").GetComponent<WordGenerator>();
+		shapeManager = GameObject.FindGameObjectWithTag ("ShapeManager").GetComponent<ShapeManager>();
 		InitializeText ();
 	}
 	
@@ -28,6 +30,10 @@ public class PlayerController : MonoBehaviour {
 
 	void InitializeText(){
 		tm = GetComponent<TextMesh> ();
+		ResetText ();
+	}
+
+	void ResetText(){
 		verb = "[]";
 		adjective = "[]";
 		noun = "[]";
@@ -35,8 +41,25 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void UpdateText(){
-		tm.text = verb + adjective + noun;
+		tm.text = ProcessText (verb) + ProcessText (adjective) + ProcessText (noun);
+		if (tm.text.Length == 3) {
+			if (verb == "MAKE") {
+				shapeManager.CreateShape (noun, adjective);
+			}
+			ResetText ();
+		}
 	}
+
+	string ProcessText(string text){
+		string textToReturn;
+		if (text == "[]") {
+			textToReturn = text;
+		} else {
+			textToReturn = text [0].ToString();
+		}
+		return textToReturn;
+	}
+
 	void Move(){
 		Vector2 direction = new Vector2 (Input.GetAxis ("Horizontal_P" + playerNum), Input.GetAxis ("Vertical_P" + playerNum));
 		rb.velocity = speed * direction;
@@ -47,17 +70,17 @@ public class PlayerController : MonoBehaviour {
 		if (collidedObject.tag == "Word") {
 			WordController wc = collidedObject.GetComponent<WordController> ();
 			if (wc.partOfSpeech == "verb") {
-				verb = wc.text [0].ToString();
+				verb = wc.text;
 			}
 			else if (wc.partOfSpeech == "adjective") {
-				adjective = wc.text [0].ToString();
+				adjective = wc.text;
 			}
 			else if (wc.partOfSpeech == "noun") {
-				noun = wc.text [0].ToString();
+				noun = wc.text;
 			}
 			UpdateText ();
 
-			wordGenerator.GetComponent<WordGenerator>().ReplaceWord (collidedObject);
+			wordGenerator.ReplaceWord (collidedObject);
 		}
 	}
 }

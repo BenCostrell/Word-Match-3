@@ -4,7 +4,7 @@ using System.Collections;
 public class ShapeController : MonoBehaviour {
 
 	public string shape;
-	public Color color;
+	public string color;
 	public ShapeManager shapeManager;
 
 	// Use this for initialization
@@ -17,11 +17,11 @@ public class ShapeController : MonoBehaviour {
 	
 	}
 
-	public void InitializeProperties(string newShape, Color newColor){
+	public void InitializeProperties(string newShape, string newColor){
 		shape = newShape;
 		color = newColor;
 		SpriteRenderer sr = GetComponent<SpriteRenderer> ();
 		sr.sprite = shapeManager.GetSpriteByName (newShape);
-		sr.color = newColor;
+		sr.color = shapeManager.GetColorByName (newColor);
 	}
 }
