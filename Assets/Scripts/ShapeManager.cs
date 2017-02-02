@@ -10,8 +10,10 @@ public class ShapeManager : MonoBehaviour {
 	public GameObject shapePrefab;
 
 	public Vector3 nextSpawnLocation;
+	public int nextGridXValue;
 
 	public GameObject[,] shapeGrid;
+	public int[] numObjectsInEachColumn;
 
 	// Use this for initialization
 	void Start () {
@@ -24,8 +26,10 @@ public class ShapeManager : MonoBehaviour {
 	}
 
 	void InitializeShapeGrid(){
-		shapeGrid = new GameObject[5, 5];
+		shapeGrid = new GameObject[5, 6];
 		nextSpawnLocation = new Vector3 (7, 4);
+		nextGridXValue = 0;
+		numObjectsInEachColumn = new int[5] { 0, 0, 0, 0, 0 };
 	}
 
 	public Sprite GetSpriteByName(string spriteName){
@@ -58,9 +62,14 @@ public class ShapeManager : MonoBehaviour {
 		GameObject newShapeObject = Instantiate (shapePrefab, nextSpawnLocation, Quaternion.identity) as GameObject;
 		newShapeObject.GetComponent<ShapeController> ().InitializeProperties (newShape, newColor);
 
+		shapeGrid [nextGridXValue, numObjectsInEachColumn[nextGridXValue]] = newShapeObject;
+		numObjectsInEachColumn [nextGridXValue] += 1;
+
 		nextSpawnLocation += new Vector3 (1.6f, 0);
-		if (nextSpawnLocation.x > 13.5f) {
+		nextGridXValue += 1;
+		if (nextGridXValue > 4) {
 			nextSpawnLocation = new Vector3 (7, 4);
+			nextGridXValue = 0;
 		}
 	}
 }
