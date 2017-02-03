@@ -71,7 +71,7 @@ public class ShapeManager : MonoBehaviour {
 
 		nextGridXValue = (nextGridXValue + 1) % 5;
 		nextSpawnLocation = new Vector3 (20 + nextGridXValue * 5, -13 + numObjectsInEachColumn [nextGridXValue] * 5);
-		dropIndicator.transform.position = new Vector3 (nextSpawnLocation.x, 13);
+		dropIndicator.transform.position = new Vector3 (nextSpawnLocation.x, dropIndicator.transform.position.y);
 	}
 
 	public GameObject GetObjectInGrid(string shape, string color){
