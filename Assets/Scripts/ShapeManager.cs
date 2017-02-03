@@ -16,6 +16,8 @@ public class ShapeManager : MonoBehaviour {
 	public GameObject[,] shapeGrid;
 	public int[] numObjectsInEachColumn;
 
+	public GameObject dropIndicator;
+
 	// Use this for initialization
 	void Start () {
 		InitializeShapeGrid ();
@@ -23,7 +25,6 @@ public class ShapeManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 
 	void InitializeShapeGrid(){
@@ -61,31 +62,40 @@ public class ShapeManager : MonoBehaviour {
 
 	public void CreateShape(string newShape, string newColor, GameObject player){
 		GameObject newShapeObject = Instantiate (shapePrefab, nextSpawnLocation, Quaternion.identity) as GameObject;
-		newShapeObject.GetComponent<ShapeController> ().InitializeProperties (newShape, newColor);
+		int colNum = nextGridXValue;
+		int rowNum = numObjectsInEachColumn [colNum];
 
-		shapeGrid [nextGridXValue, numObjectsInEachColumn[nextGridXValue]] = newShapeObject;
+		newShapeObject.GetComponent<ShapeController> ().InitializeProperties (newShape, newColor, colNum, rowNum);
+		shapeGrid [colNum, rowNum] = newShapeObject;
 		UpdateObjectCount ();
 
-		nextSpawnLocation += new Vector3 (5, 0);
-		nextGridXValue += 1;
-		if (nextGridXValue > 4) {
-			nextGridXValue = 0;
-			nextSpawnLocation = new Vector3 (20, -13 + numObjectsInEachColumn[nextGridXValue]*5);
-		}	
+		nextGridXValue = (nextGridXValue + 1) % 5;
+		nextSpawnLocation = new Vector3 (20 + nextGridXValue * 5, -13 + numObjectsInEachColumn [nextGridXValue] * 5);
+		dropIndicator.transform.position = new Vector3 (nextSpawnLocation.x, 13);
 	}
 
 	public GameObject GetObjectInGrid(string shape, string color){
+		GameObject objectToReturn = null;
+		bool foundObject = false;
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++){
 				if (shapeGrid [i, j] != null) {
 					GameObject shapeObject = shapeGrid [i, j];
-					if ((shapeObject.GetComponent<ShapeController> ().shape == shape) && (shapeObject.GetComponent<ShapeController> ().color == color)) {
-						return gameObject;
+					if ((shapeObject.GetComponent<ShapeController> ().shape == shape) && 
+						(shapeObject.GetComponent<ShapeController> ().color == color)) {
+						objectToReturn = shapeObject;
+						foundObject = true;
 					}
 				}
+				if (foundObject) {
+					break;
+				}
+			}
+			if (foundObject) {
+				break;
 			}
 		}
-		return null;
+		return objectToReturn;
 	}
 
 	void UpdateObjectCount(){
@@ -130,11 +140,17 @@ public class ShapeManager : MonoBehaviour {
 				}
 			}
 		}
+		bool areThereMatches = false;
+		if (objectsInMatches.Count > 0) {
+			areThereMatches = true;
+		}
 		foreach (GameObject shape in objectsInMatches) {
 			shape.GetComponent<ShapeController> ().DestroyAndScore (player);
 		}
 		UpdateGrid ();
-		UpdateObjectCount ();
+		if (areThereMatches) {
+			CheckForMatches (player);
+		}
 	}
 
 	bool IsMatch(GameObject shape1, GameObject shape2, GameObject shape3){
@@ -151,12 +167,17 @@ public class ShapeManager : MonoBehaviour {
 	}
 
 	public void UpdateGrid(){
+		UpdateObjectCount ();
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 4; j++) {
-				if ((shapeGrid [i, j] == null) && (shapeGrid [i, j + 1] != null)) {
-					shapeGrid [i, j] = shapeGrid [i, j + 1];
+				if ((shapeGrid [i, j] == null) && (shapeGrid [i, j + 1] != null)){
+					Debug.Log ("shifting");
+					GameObject shiftedObject = shapeGrid [i, j + 1];
 					shapeGrid [i, j + 1] = null;
-					shapeGrid [i, j].transform.position = new Vector3 (20 + (i * 5), -13 + (j * 5));
+					shiftedObject.transform.position = new Vector3 (20 + (i * 5), -13 + (j * 5));
+					shiftedObject.GetComponent<ShapeController> ().col = i;
+					shiftedObject.GetComponent<ShapeController> ().row = j;
+					shapeGrid [i, j] = shiftedObject;
 				}
 			}
 		}
