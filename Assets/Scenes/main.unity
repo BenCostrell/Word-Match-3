@@ -656,7 +656,7 @@ GameObject:
   - 114: {fileID: 840674009}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -690,6 +690,8 @@ MonoBehaviour:
     type: 2}
   player1: {fileID: 0}
   player2: {fileID: 0}
+  score_P1: {fileID: 340739189}
+  score_P2: {fileID: 9395968}
 --- !u!1 &896042865
 GameObject:
   m_ObjectHideFlags: 0

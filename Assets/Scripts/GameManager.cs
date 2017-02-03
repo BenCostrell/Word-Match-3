@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -8,6 +9,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject player1;
 	public GameObject player2;
+	public GameObject score_P1;
+	public GameObject score_P2;
 
 
 	// Use this for initialization
@@ -31,5 +34,10 @@ public class GameManager : MonoBehaviour {
 
 		wordGenerator.GetComponent<WordGenerator> ().player1 = player1;
 		wordGenerator.GetComponent<WordGenerator> ().player2 = player2;
+	}
+
+	public void UpdateScore(){
+		score_P1.GetComponent<Text> ().text = player1.GetComponent<PlayerController>().score.ToString();
+		score_P2.GetComponent<Text> ().text = player2.GetComponent<PlayerController>().score.ToString();
 	}
 }

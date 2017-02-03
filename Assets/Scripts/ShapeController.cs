@@ -6,12 +6,14 @@ public class ShapeController : MonoBehaviour {
 	public string shape;
 	public string color;
 	public ShapeManager shapeManager;
+	public GameManager gameManager;
 	public int col;
 	public int row;
 
 	// Use this for initialization
 	void Awake () {
 		shapeManager = GameObject.FindGameObjectWithTag ("ShapeManager").GetComponent<ShapeManager> ();
+		gameManager = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<GameManager> ();
 	}
 	
 	// Update is called once per frame
@@ -34,5 +36,6 @@ public class ShapeController : MonoBehaviour {
 		Destroy (gameObject);
 		shapeManager.shapeGrid [col, row] = null;
 		shapeManager.UpdateGrid ();
+		gameManager.UpdateScore ();
 	}
 }
