@@ -33,5 +33,6 @@ public class ShapeController : MonoBehaviour {
 		player.GetComponent<PlayerController> ().score += 1;
 		Destroy (gameObject);
 		shapeManager.shapeGrid [col, row] = null;
+		shapeManager.UpdateGrid ();
 	}
 }
