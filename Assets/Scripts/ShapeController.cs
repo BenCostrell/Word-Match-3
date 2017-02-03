@@ -24,4 +24,9 @@ public class ShapeController : MonoBehaviour {
 		sr.sprite = shapeManager.GetSpriteByName (newShape);
 		sr.color = shapeManager.GetColorByName (newColor);
 	}
+
+	public void DestroyAndScore(GameObject player){
+		player.GetComponent<PlayerController> ().score += 1;
+		Destroy (gameObject);
+	}
 }

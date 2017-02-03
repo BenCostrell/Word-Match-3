@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour {
 
 	private TextMesh tm;
 
+	public int score;
+
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D> ();
@@ -44,8 +46,17 @@ public class PlayerController : MonoBehaviour {
 		tm.text = ProcessText (verb) + ProcessText (adjective) + ProcessText (noun);
 		if (tm.text.Length == 3) {
 			if (verb == "MAKE") {
-				shapeManager.CreateShape (noun, adjective);
+				shapeManager.CreateShape (noun, adjective, gameObject);
+				shapeManager.CheckForMatches (gameObject);
+			} else if (verb == "DESTROY") {
+				GameObject shapeToDestroy = shapeManager.GetObjectInGrid (noun, adjective);
+				if (shapeToDestroy != null) {
+					shapeToDestroy.GetComponent<ShapeController> ().DestroyAndScore (gameObject);
+					shapeManager.UpdateGrid ();
+					shapeManager.CheckForMatches (gameObject);
+				}
 			}
+
 			ResetText ();
 		}
 	}
