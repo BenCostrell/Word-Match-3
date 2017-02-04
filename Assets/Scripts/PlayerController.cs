@@ -27,7 +27,11 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		Move ();
+		if (!shapeManager.waitForTweens) {
+			Move ();
+		} else {
+			Freeze ();
+		}
 	}
 
 	void InitializeText(){
@@ -74,6 +78,10 @@ public class PlayerController : MonoBehaviour {
 	void Move(){
 		Vector2 direction = new Vector2 (Input.GetAxis ("Horizontal_P" + playerNum), Input.GetAxis ("Vertical_P" + playerNum));
 		rb.velocity = speed * direction;
+	}
+
+	void Freeze(){
+		rb.velocity = Vector3.zero;
 	}
 
 	void OnTriggerEnter2D(Collider2D collider){

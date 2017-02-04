@@ -18,6 +18,10 @@ public class ShapeManager : MonoBehaviour {
 
 	public GameObject dropIndicator;
 
+	public bool waitForTweens;
+	public int tweensRemaining;
+	private GameObject playerWhoInitiatedDeletion;
+
 	// Use this for initialization
 	void Start () {
 		InitializeShapeGrid ();
@@ -25,6 +29,11 @@ public class ShapeManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (waitForTweens && (tweensRemaining == 0)) {
+			waitForTweens = false;
+			CheckForMatches (playerWhoInitiatedDeletion);
+		}
+
 	}
 
 	void InitializeShapeGrid(){
@@ -61,17 +70,21 @@ public class ShapeManager : MonoBehaviour {
 	}
 
 	public void CreateShape(string newShape, string newColor, GameObject player){
-		GameObject newShapeObject = Instantiate (shapePrefab, nextSpawnLocation, Quaternion.identity) as GameObject;
 		int colNum = nextGridXValue;
 		int rowNum = numObjectsInEachColumn [colNum];
-
+		Vector3 spawnLocation = CalculateSpawnLocation (colNum, rowNum);
+		GameObject newShapeObject = Instantiate (shapePrefab, spawnLocation, Quaternion.identity) as GameObject;
+		
 		newShapeObject.GetComponent<ShapeController> ().InitializeProperties (newShape, newColor, colNum, rowNum);
 		shapeGrid [colNum, rowNum] = newShapeObject;
 		UpdateObjectCount ();
 
 		nextGridXValue = (nextGridXValue + 1) % 5;
-		nextSpawnLocation = new Vector3 (20 + nextGridXValue * 5, -13 + numObjectsInEachColumn [nextGridXValue] * 5);
-		dropIndicator.transform.position = new Vector3 (nextSpawnLocation.x, dropIndicator.transform.position.y);
+		dropIndicator.transform.position = new Vector3 (CalculateSpawnLocation(nextGridXValue, rowNum).x, dropIndicator.transform.position.y);
+	}
+
+	Vector3 CalculateSpawnLocation(int col, int row){
+		return new Vector3 (20 + col * 5, -13 + row * 5);
 	}
 
 	public GameObject GetObjectInGrid(string shape, string color){
@@ -149,7 +162,8 @@ public class ShapeManager : MonoBehaviour {
 		}
 		UpdateGrid ();
 		if (areThereMatches) {
-			CheckForMatches (player);
+			waitForTweens = true;
+			playerWhoInitiatedDeletion = player;
 		}
 	}
 

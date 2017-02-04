@@ -765,6 +765,7 @@ MonoBehaviour:
   verbs:
   - verb
   - MAKE
+  - MAKE
   - DESTROY
   adjectives:
   - adjective
@@ -992,6 +993,8 @@ MonoBehaviour:
   nextGridXValue: 0
   numObjectsInEachColumn: 
   dropIndicator: {fileID: 2054392025}
+  waitForTweens: 0
+  tweensRemaining: 0
 --- !u!4 &1605984291
 Transform:
   m_ObjectHideFlags: 0
