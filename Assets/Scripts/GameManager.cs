@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject player2;
 	public GameObject score_P1;
 	public GameObject score_P2;
+	public GameObject actionNotification;
 
 
 	// Use this for initialization
@@ -39,5 +40,31 @@ public class GameManager : MonoBehaviour {
 	public void UpdateScore(){
 		score_P1.GetComponent<Text> ().text = player1.GetComponent<PlayerController>().score.ToString();
 		score_P2.GetComponent<Text> ().text = player2.GetComponent<PlayerController>().score.ToString();
+	}
+
+	public void ActivateActionNotification(int playerNum, string verb, string adjective, string noun, bool destructionAttemptedButDidntOccur){
+		string destructionAttempt = "";
+		if (destructionAttemptedButDidntOccur) {
+			destructionAttempt = " TRIED TO ";
+		}
+		actionNotification.SetActive (true);
+		actionNotification.GetComponent<Text>().text = "PLAYER " + playerNum + " " + destructionAttempt + 
+			VerbToPastTense(verb, destructionAttemptedButDidntOccur) + " A " + adjective + " " + noun;
+		iTween.ScaleFrom (actionNotification, iTween.Hash ("scale", 2f * Vector3.one, "time", 0.8f, 
+			"oncomplete", "DeactivateActionNotification", "oncompletetarget", gameObject));
+	}
+
+	void DeactivateActionNotification(){
+		actionNotification.SetActive (false);
+	}
+
+	string VerbToPastTense(string verb, bool failedAttempt){
+		if (verb == "MAKE") {
+			return "MADE";
+		} else if (!failedAttempt) {
+			return verb + "ED";
+		} else {
+			return verb;
+		}
 	}
 }

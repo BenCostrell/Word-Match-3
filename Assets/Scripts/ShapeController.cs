@@ -10,10 +10,13 @@ public class ShapeController : MonoBehaviour {
 	public int col;
 	public int row;
 
+	private bool singleDestruction;
+
 	// Use this for initialization
 	void Awake () {
 		shapeManager = GameObject.FindGameObjectWithTag ("ShapeManager").GetComponent<ShapeManager> ();
 		gameManager = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<GameManager> ();
+		singleDestruction = false;
 	}
 	
 	// Update is called once per frame
@@ -31,8 +34,8 @@ public class ShapeController : MonoBehaviour {
 		row = rowNum;
 	}
 
-	public void DestroyAndScore(GameObject player){
-		shapeManager.tweensRemaining += 1;
+	public void DestroyAndScore(GameObject player, bool singleDest){
+		singleDestruction = singleDest;
 		iTween.ScaleFrom (gameObject, iTween.Hash ("scale", 1.5f * Vector3.one, "time", 1f, 
 			"oncomplete", "FinishDestroyingShape", "oncompleteparams", player));
 	}
@@ -44,5 +47,9 @@ public class ShapeController : MonoBehaviour {
 		shapeManager.shapeGrid [col, row] = null;
 		shapeManager.UpdateGrid ();
 		gameManager.UpdateScore ();
+		if (singleDestruction) {
+			singleDestruction = false;
+			shapeManager.CheckForMatches (player);
+		}
 	}
 }

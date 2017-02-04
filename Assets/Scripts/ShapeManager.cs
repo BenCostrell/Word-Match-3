@@ -25,11 +25,13 @@ public class ShapeManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		InitializeShapeGrid ();
+		tweensRemaining = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (waitForTweens && (tweensRemaining == 0)) {
+			Debug.Log ("rechecking");
 			waitForTweens = false;
 			CheckForMatches (playerWhoInitiatedDeletion);
 		}
@@ -153,18 +155,16 @@ public class ShapeManager : MonoBehaviour {
 				}
 			}
 		}
-		bool areThereMatches = false;
 		if (objectsInMatches.Count > 0) {
-			areThereMatches = true;
-		}
-		foreach (GameObject shape in objectsInMatches) {
-			shape.GetComponent<ShapeController> ().DestroyAndScore (player);
-		}
-		UpdateGrid ();
-		if (areThereMatches) {
 			waitForTweens = true;
 			playerWhoInitiatedDeletion = player;
+			foreach (GameObject shape in objectsInMatches) {
+				shape.GetComponent<ShapeController> ().DestroyAndScore (player, false);
+				tweensRemaining += 1;
+			}
 		}
+
+		UpdateGrid ();
 	}
 
 	bool IsMatch(GameObject shape1, GameObject shape2, GameObject shape3){
@@ -185,7 +185,6 @@ public class ShapeManager : MonoBehaviour {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 4; j++) {
 				if ((shapeGrid [i, j] == null) && (shapeGrid [i, j + 1] != null)){
-					Debug.Log ("shifting");
 					GameObject shiftedObject = shapeGrid [i, j + 1];
 					shapeGrid [i, j + 1] = null;
 					shiftedObject.transform.position = new Vector3 (20 + (i * 5), -13 + (j * 5));
