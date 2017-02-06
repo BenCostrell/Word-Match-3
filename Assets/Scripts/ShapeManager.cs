@@ -160,7 +160,6 @@ public class ShapeManager : MonoBehaviour {
 			playerWhoInitiatedDeletion = player;
 			foreach (GameObject shape in objectsInMatches) {
 				shape.GetComponent<ShapeController> ().DestroyAndScore (player, false);
-				tweensRemaining += 1;
 			}
 		}
 

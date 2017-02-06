@@ -36,12 +36,14 @@ public class ShapeController : MonoBehaviour {
 
 	public void DestroyAndScore(GameObject player, bool singleDest){
 		singleDestruction = singleDest;
+		shapeManager.tweensRemaining += 1;
 		iTween.ScaleFrom (gameObject, iTween.Hash ("scale", 1.5f * Vector3.one, "time", 1f, 
 			"oncomplete", "FinishDestroyingShape", "oncompleteparams", player));
 	}
 
 	void FinishDestroyingShape(GameObject player){
 		shapeManager.tweensRemaining -= 1;
+		Debug.Log (shapeManager.tweensRemaining);
 		player.GetComponent<PlayerController> ().score += 1;
 		Destroy (gameObject);
 		shapeManager.shapeGrid [col, row] = null;
